@@ -1,7 +1,7 @@
 # Traceflow - An Observability Platform
 
 A distributed log ingestion and querying system built using Go, Clickhouse, Redis, and Docker, demonstrating real-world
-observability backend patterns used in platforms
+observability backend patterns used in platforms like SigNoz.
 
 **No frontend.** curl / Postman is the client. The focus is on the backend pipeline.
 
