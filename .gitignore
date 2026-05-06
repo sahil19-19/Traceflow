@@ -1,0 +1,7 @@
+notes/
+.env
+*.exe
+*.test
+service
+*.out
+.vscode/
