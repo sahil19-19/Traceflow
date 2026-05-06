@@ -2,26 +2,24 @@ syntax = "proto3";
 
 package log;
 
-
-option go_package = "github.com/sahilverma/observability-platform/internal/grpc/gen";
+option go_package = "github.com/sahilverma/observability-platform/internal/grpc/gen"; // location for go code
 
 service LogService {
-
-    rpc NotifyBatchReady (NotifyRequest) returns (NotifyResponse);
+  rpc NotifyBatchReady (NotifyRequest) returns (NotifyResponse);
+  // NotifyBatchReady is an endpoint signals the worker that new logs are waiting in redis
+  // the worker doesnt wait for 5 seconds(polling interval) once it receives this trigger
 }
 
 message NotifyRequest {
+  string trace_id = 1; // trace_id of the HTTP request that triggered ingestion
 
-    string trace_id = 1;
-
-
-    int32 count = 2;
+  int32 count = 2; // number of logs pending in queue
 }
 
 message NotifyResponse {
-    // accepted indicates the Worker received the signal and will process.
-    bool accepted = 1;
+  // accepted indicates the worker received the signal and will process
+  bool accepted = 1;
 
-    // message is a human-readable status string, useful for debugging.
-    string message = 2;
+  // message is a human-readable status string, useful for debugging
+  string message = 2;
 }
