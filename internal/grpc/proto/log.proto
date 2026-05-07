@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package log;
 
-option go_package = "github.com/sahilverma/observability-platform/internal/grpc/gen"; // location for go code
+option go_package = "github.com/sahil19-19/Traceflow/internal/grpc/gen"; // location for go code
 
 service LogService {
   rpc NotifyBatchReady (NotifyRequest) returns (NotifyResponse);

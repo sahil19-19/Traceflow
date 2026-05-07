@@ -140,7 +140,7 @@ const file_internal_grpc_proto_log_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tR\amessage2I\n" +
 	"\n" +
 	"LogService\x12;\n" +
-	"\x10NotifyBatchReady\x12\x12.log.NotifyRequest\x1a\x13.log.NotifyResponseB@Z>github.com/sahilverma/observability-platform/internal/grpc/genb\x06proto3"
+	"\x10NotifyBatchReady\x12\x12.log.NotifyRequest\x1a\x13.log.NotifyResponseB3Z1github.com/sahil19-19/Traceflow/internal/grpc/genb\x06proto3"
 
 var (
 	file_internal_grpc_proto_log_proto_rawDescOnce sync.Once
