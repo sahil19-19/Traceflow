@@ -11,8 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// WorkerClient wraps the generated gRPC client with a friendlier API
-// the Ingestion Service holds one instance of this, created at startup
+// wraps the generated gRPC client with an API
 type WorkerClient struct {
 	conn   *grpc.ClientConn
 	client gen.LogServiceClient
@@ -36,7 +35,6 @@ func NewWorkerClient(addr string) (*WorkerClient, error) {
 }
 
 // NotifyBatchReady signals the Worker that new logs are waiting in Redis.
-
 func (c *WorkerClient) NotifyBatchReady(ctx context.Context, traceID string, count int32) error {
 	callCtx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
@@ -58,8 +56,7 @@ func (c *WorkerClient) NotifyBatchReady(ctx context.Context, traceID string, cou
 	return nil
 }
 
-// Close releases the underlying gRPC connection.
-// Defer this in main.go after creating the client.
+// Close releases the underlying gRPC connection
 func (c *WorkerClient) Close() error {
 	return c.conn.Close()
 }
