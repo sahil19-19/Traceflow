@@ -2,6 +2,7 @@
 package clickhouse
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -9,8 +10,7 @@ import (
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 )
 
-// NewClient opens a native TCP connection to ClickHouse.
-
+// NewClient opens a native TCP connection to ClickHouse
 func NewClient(addr, database, username, password string) (driver.Conn, error) {
 	conn, err := clickhouse.Open(&clickhouse.Options{
 		Addr: []string{addr},
@@ -39,7 +39,7 @@ func NewClient(addr, database, username, password string) (driver.Conn, error) {
 		return nil, fmt.Errorf("clickhouse.Open failed for addr %q: %w", addr, err)
 	}
 
-	if err := conn.Ping(nil); err != nil {
+	if err := conn.Ping(context.TODO()); err != nil { // not to pass nil context?
 		return nil, fmt.Errorf("clickhouse ping failed: %w", err)
 	}
 
