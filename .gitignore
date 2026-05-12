@@ -5,3 +5,5 @@ notes/
 service
 *.out
 .vscode/
+*.swp
+*.swo

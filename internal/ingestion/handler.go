@@ -7,7 +7,7 @@ import (
 	"github.com/sahil19-19/Traceflow/pkg/middleware"
 )
 
-// handler parses the request body, reading trace ID from locals, and forming the response.
+// handler parses the request body, reading trace ID and forming the response
 type Handler struct {
 	service *Service
 }
@@ -18,8 +18,8 @@ func NewHandler(service *Service) *Handler {
 }
 
 func (h *Handler) Handle(c *fiber.Ctx) error {
-	// read the trace ID that the middleware attached to locals.
-	// type assertion: Locals returns interface{}, we know it's a string.
+	// read the trace ID that the middleware attached to locals
+	// type assertion: Locals returns interface{}, we know it's a string
 	traceID, _ := c.Locals(middleware.TraceIDKey).(string)
 
 	var event LogEvent
