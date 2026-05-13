@@ -1,0 +1,41 @@
+# Run from the project root: cd deployments && docker-compose up --build
+version: '3.8'
+
+services:
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"   # http interface - used by clickhouse-client for ad-hoc queries
+      - "9000:9000"   # native tcp interface - used by the go driver
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ../migrations:/docker-entrypoint-initdb.d   # mount the migrations
+    environment:
+      CLICKHOUSE_DB: observability
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes # for persistence between redis restarts
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  clickhouse_data:
+    driver: local
+  redis_data:
+    driver: local
