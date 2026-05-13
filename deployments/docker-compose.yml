@@ -1,6 +1,5 @@
 # Run from the project root: cd deployments && docker-compose up --build
-version: '3.8'
-
+name: traceflow
 services:
 
   clickhouse:
@@ -20,6 +19,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis:7-alpine
@@ -33,6 +38,12 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   clickhouse_data:
