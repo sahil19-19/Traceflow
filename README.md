@@ -85,10 +85,12 @@ cd observability-platform
 # Copy the example env file
 cp .env.example .env
 
-# Start everything (ClickHouse, Redis, all 3 Go services)
+# Start everything (ClickHouse, Redis, all 3 Go services). Note currently only infra code has been added so go code has to be run manually
 cd deployments
 docker-compose up --build
 ```
+
+
 
 On first startup, ClickHouse automatically runs `migrations/001_create_logs.sql`
 to create the `observability` database and `logs` table.
@@ -106,7 +108,7 @@ curl -X POST http://localhost:8080/ingest \
   }'
 
 # Response:
-# {"status":"accepted","trace_id":"4bf92f3577b34da6a3ce929d0e0e4736"}
+# {"status":"accepted","trace_id":"1a23sdf..."}
 ```
 
 The response is `202 Accepted` (not 201 Created) because the log is queued for async processing,
@@ -146,7 +148,7 @@ curl http://localhost:8081/health   # Query service
 
 ClickHouse is a **columnar store**
 Log data is written once and read many times with aggregations (`GROUP BY level`,
-time-range scans). PostgreSQL is a row store — every query reads all columns of every
+time-range scans). PostgreSQL is a row store - every query reads all columns of every
 matching row, even if you only need `level` and `message`.
 
 ClickHouse reads only the columns you `SELECT`. For wide log tables with millions of rows
@@ -155,19 +157,19 @@ Additionally, ClickHouse's `MergeTree` engine is designed for bulk inserts
 
 ### Why Redis queue between Ingestion and Worker?
 
-Without a queue, slow ClickHouse writes would block every `POST /ingest` HTTP response —
+Without a queue, slow ClickHouse writes would block every `POST /ingest` HTTP response -
 the client would wait seconds for a single log to be confirmed written to disk.
 
 With Redis:
 - **Ingestion latency** = Redis LPUSH latency
 - **Storage latency** = async, handled by the Worker in batches
 - **Spike tolerance**: a traffic burst fills Redis (fast) and the Worker drains at a steady pace
-- **Batching**: the Worker writes 20+ logs per ClickHouse INSERT — far more efficient than
+- **Batching**: the Worker writes 20+ logs per ClickHouse INSERT - far more efficient than
   20 individual inserts (each of which creates a separate disk part)
 
 ### Why gRPC for Ingestion → Worker signal?
 
-The gRPC call is an **optimisation signal** — it tells the Worker to drain the queue immediately
+The gRPC call is an **optimisation signal** - it tells the Worker to drain the queue immediately
 rather than waiting for the 5-second polling interval. This reduces log-to-ClickHouse latency.
 
 gRPC is used (instead of HTTP) because:
@@ -219,7 +221,7 @@ observability-platform/
 
 ---
 
-## Development — Regenerating Protobuf
+## Development - Regenerating Protobuf
 
 If you modify `internal/grpc/proto/log.proto`, regenerate the Go code:
 
@@ -242,7 +244,7 @@ protoc --go_out=./internal/grpc/gen --go_opt=paths=source_relative \
 
 ---
 
-## Development — Running locally without Docker
+## Development - running locally without docker
 
 ```bash
 # Start infrastructure only
